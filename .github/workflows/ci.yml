@@ -1,0 +1,34 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - releases/*
+  schedule:
+    - cron: 0 19 * * 2
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - run: npm test
+  integration_default:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        id: run_myself
+        continue-on-error: true
+      - run: echo '${{steps.run_myself.outputs.output}}' | grep 'github-action-cspell/test/README_BAD.md:1:8 - Unknown word (Informationnnn)'
+  integration_custom_path:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        id: run_myself
+        with:
+          path: test/README_G*.md
+      - run:  "echo '${{steps.run_myself.outputs.output}}' | grep 'CSpell: Files checked: 1, Issues found: 0 in 0 files'"
