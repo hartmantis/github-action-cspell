@@ -1,13 +1,16 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: CSpell
+description: Run the cspell spell checker
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  path:
+    description: Path to run cspell against
     required: true
-    default: '1000'
+    default: '**/*.md'
 outputs:
-  time: # output will be available to future steps
-    description: 'The message to output'
+  output:
+    description: The output from running cspell
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: node12
+  main: index.js
+branding:
+  icon: book
+  color: purple

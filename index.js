@@ -1,19 +1,15 @@
 const core = require('@actions/core');
-const wait = require('./wait');
-
+const cspell = require('./github-action-cspell');
 
 // most @actions toolkit packages have async methods
 async function run() {
   try {
-    const ms = core.getInput('milliseconds');
-    core.info(`Waiting ${ms} milliseconds ...`);
-
-    core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await wait(parseInt(ms));
-    core.info((new Date()).toTimeString());
-
-    core.setOutput('time', new Date().toTimeString());
+    const path = core.getInput('path');
+    core.info(`Running cspell against '${path}'...`);
+    const res = await cspell(path);
+    core.setOutput('output', res);
   } catch (error) {
+    core.setOutput('output', error.message);
     core.setFailed(error.message);
   }
 }
